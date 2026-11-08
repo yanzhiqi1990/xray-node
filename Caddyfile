@@ -1,0 +1,11 @@
+# VPS 方案：Caddy 自动申请 Let's Encrypt 证书并反代到容器内的 Xray WS
+# 把 node.example.com 换成你自己的域名（需先解析 A 记录到本机公网 IP）
+node.example.com {
+    encode gzip
+    @ws {
+        path /86e7d17b
+    }
+    reverse_proxy @ws 127.0.0.1:10000
+    # 其它路径返回一个普通页面，降低特征
+    respond "OK" 200
+}

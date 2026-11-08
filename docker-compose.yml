@@ -1,0 +1,29 @@
+# VPS 一键：xray(容器, 内网 10000) + caddy(80/443 自动 TLS)
+# 用法：把 Caddyfile 里 node.example.com 改成你的域名 -> docker compose up -d
+services:
+  xray:
+    build: .
+    restart: unless-stopped
+    environment:
+      PORT: "10000"
+      UUID: "e974e5e0-fd9e-41de-8ce0-238ad038f222"
+      WS_PATH: "/86e7d17b"
+    expose:
+      - "10000"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - xray
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
